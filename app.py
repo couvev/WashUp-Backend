@@ -1,14 +1,16 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from flask_cors import CORS
 import os
 
 app = Flask(__name__)
+CORS(app)  # Habilitar CORS para permitir requisições de outros domínios
 
 # Conexão com o MongoDB Atlas
-MONGO_URI = "mongodb+srv://thiagolcsalves:N8A07bfMzFB9Q05j@wpcluster.nlnuy.mongodb.net/?retryWrites=true&w=majority&appName=WPCluster"
+MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
-db = client['washup']  # Nome do banco de dados no MongoDB Atlas
+db = client['washup']
 
 # Coleção de usuários
 users_collection = db['users']
