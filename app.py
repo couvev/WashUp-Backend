@@ -28,6 +28,11 @@ def home():
     logging.info("Rota '/' acessada. Servidor está rodando.")
     return "API WashUp rodando com MongoDB Atlas!"
 
+@app.route('/teste')
+def teste():
+    logging.info("Rota '/' acessada. Servidor está rodando.")
+    return "Teste"
+
 # Rota para criar um novo usuário (POST)
 @app.route('/register', methods=['POST'])
 def register_user():
