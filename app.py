@@ -208,6 +208,7 @@ def get_available_slots():
         logging.error(f"Erro ao buscar horários disponíveis: {e}")
         return jsonify({"error": "Erro ao buscar horários disponíveis"}), 500
 
+
 # Rota para agendar um horário (POST)
 @app.route('/bookings', methods=['POST'])
 def book_slot():
