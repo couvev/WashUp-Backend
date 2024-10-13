@@ -167,31 +167,19 @@ def register_car_wash():
         logging.error(f"Erro ao registrar lava jato: {e}")
         return jsonify({"error": "Erro ao registrar lava jato"}), 500
 
-# Rota para listar lava jatos (GET)
-@app.route('/car_washes', methods=['GET'])
-def get_car_washes():
-    logging.info("Rota '/car_washes' acessada.")
+@app.route('/car_washes/<car_wash_id>', methods=['GET'])
+def get_car_wash_details(car_wash_id):
     try:
-        # Verificar se foi passado algum filtro, como a cidade
-        city = request.args.get('city')
-
-        query = {}
-        if city:
-            query['address.city'] = city
-
-        # Buscar os lava jatos no MongoDB
-        car_washes = list(car_washes_collection.find(query))
-
-        # Converter ObjectId para string antes de retornar
-        for car_wash in car_washes:
-            car_wash['_id'] = str(car_wash['_id'])
-
-        logging.info(f"Total de lava jatos encontrados: {len(car_washes)}")
-        return jsonify(car_washes), 200
-
+        car_wash = car_washes_collection.find_one({"_id": ObjectId(car_wash_id)})
+        if car_wash:
+            car_wash['_id'] = str(car_wash['_id'])  # Converter ObjectId para string
+            return jsonify(car_wash), 200
+        else:
+            return jsonify({"error": "Lava jato não encontrado"}), 404
     except Exception as e:
-        logging.error(f"Erro ao buscar lava jatos: {e}")
-        return jsonify({"error": "Erro ao buscar lava jatos"}), 500
+        logging.error(f"Erro ao buscar lava jato: {e}")
+        return jsonify({"error": "Erro ao buscar lava jato"}), 500
+
 
 # Rota para obter horários disponíveis (GET)
 @app.route('/bookings/available', methods=['GET'])
