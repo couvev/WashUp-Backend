@@ -86,6 +86,37 @@ def register_user():
         logging.error(f"Erro ao registrar o usuário: {e}")
         return jsonify({"error": "Erro ao registrar o usuário"}), 500
 
+# Rota para login de usuário (POST)
+@app.route('/login', methods=['POST'])
+def login_user():
+    logging.info("Rota '/login' acessada.")
+    try:
+        data = request.get_json()
+        logging.info(f"Dados recebidos: {data}")
+
+        # Verificar se os campos obrigatórios estão presentes
+        if not all(key in data for key in ('email', 'password')):
+            logging.warning("Dados obrigatórios ausentes.")
+            return jsonify({"error": "Dados obrigatórios ausentes"}), 400
+
+        # Verificar se o usuário existe
+        user = users_collection.find_one({"email": data['email']})
+        if not user:
+            logging.warning("Usuário não encontrado.")
+            return jsonify({"error": "Usuário não encontrado"}), 404
+
+        # Verificar a senha
+        if bcrypt.checkpw(data['password'].encode('utf-8'), user['password']):
+            logging.info("Login bem-sucedido.")
+            return jsonify({"status": "success", "message": "Login bem-sucedido!"}), 200
+        else:
+            logging.warning("Senha incorreta.")
+            return jsonify({"error": "Senha incorreta"}), 401
+
+    except Exception as e:
+        logging.error(f"Erro ao fazer login: {e}")
+        return jsonify({"error": "Erro ao fazer login"}), 500
+
 # Rota para listar todos os usuários (GET)
 @app.route('/users', methods=['GET'])
 def get_users():
