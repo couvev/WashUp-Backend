@@ -271,6 +271,26 @@ def cancel_booking(booking_id):
         logging.error(f"Erro ao cancelar reserva: {e}")
         return jsonify({"error": "Erro ao cancelar reserva"}), 500
     
+# Rota para listar lava jatos (GET)
+@app.route('/car_washes', methods=['GET'])
+def get_car_washes():
+    logging.info("Rota '/car_washes' acessada.")
+    try:
+        # Buscar todos os lava jatos no MongoDB
+        car_washes = list(car_washes_collection.find())
+
+        # Converter ObjectId para string antes de retornar
+        for car_wash in car_washes:
+            car_wash['_id'] = str(car_wash['_id'])
+
+        logging.info(f"Total de lava jatos encontrados: {len(car_washes)}")
+        return jsonify(car_washes), 200
+
+    except Exception as e:
+        logging.error(f"Erro ao buscar lava jatos: {e}")
+        return jsonify({"error": "Erro ao buscar lava jatos"}), 500
+
+    
 @app.errorhandler(Exception)
 def handle_exception(e):
     logging.error(f"Erro no servidor: {e}")
