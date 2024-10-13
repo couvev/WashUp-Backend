@@ -281,6 +281,12 @@ def cancel_booking(booking_id):
     except Exception as e:
         logging.error(f"Erro ao cancelar reserva: {e}")
         return jsonify({"error": "Erro ao cancelar reserva"}), 500
+    
+@app.errorhandler(Exception)
+def handle_exception(e):
+    logging.error(f"Erro no servidor: {e}")
+    return jsonify({"error": "Erro no servidor", "details": str(e)}), 500
+
 
 if __name__ == '__main__':
     logging.info("Iniciando o servidor Flask...")
